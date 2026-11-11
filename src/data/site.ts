@@ -195,12 +195,6 @@ export const kb: KbEntry[] = [
     cite: '#console', citeLabel: 'Console',
   },
   {
-    id: 'sgui',
-    keys: ['sg.ui', 'sgui', 'rails', 'scss', 'earlier', 'history', '2012', 'past'],
-    answer: 'sg.ui is a 2012 Rails and SCSS prototype exploring shared interface foundations: semantic structure, typography, navigation, and reusable styling primitives. Systems thinking applied to UI, long before design tokens were standard.',
-    cite: '#work', citeLabel: 'Earlier work',
-  },
-  {
     id: 'contact',
     keys: ['contact', 'reach', 'email', 'hire', 'hiring', 'available', 'availability', 'work', 'together', 'connect', 'linkedin', 'talk'],
     answer: 'The best route is LinkedIn. He’s interested in conversations about agentic product engineering, AI-native development, developer experience, and hands-on product systems work.',

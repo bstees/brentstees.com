@@ -284,7 +284,7 @@ h3 { font-size: var(--step-1); font-weight: 700; letter-spacing: -0.015em; line-
   & > p:first-of-type { color: var(--ink); }
 }
 .project-head h3 { font-size: var(--step-2); color: var(--ink); margin-block-start: 0.25rem; }
-.project-head a, .earlier a { text-decoration: none; }
+.project-head a { text-decoration: none; }
 .arrow { display: inline-block; margin-inline-start: 0.35em; font-size: 0.7em; color: var(--accent-ink); transition: translate 0.25s var(--ease); }
 a:hover > .arrow { translate: 0.15em -0.15em; }
 .lens-copy strong { display: block; margin-block-end: 0.25rem; font-weight: 500; color: var(--accent-ink); text-transform: uppercase; letter-spacing: 0.06em; }
@@ -343,7 +343,6 @@ a:hover > .arrow { translate: 0.15em -0.15em; }
 .tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .tags li { padding: 0.2rem 0.6rem; border-radius: 999px; background: var(--surface-2); color: var(--ink); font-size: 0.72rem; }
 
-.earlier { display: grid; gap: 0.5rem; color: var(--muted); & h3 { color: var(--ink); } }
 
 /* ---- Capabilities -------------------------------------------------------- */
 .caps { container-type: inline-size; border-block-start: 1px solid var(--line); }
