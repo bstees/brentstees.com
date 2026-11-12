@@ -1,0 +1,53 @@
+---
+import { getCollection } from 'astro:content';
+import DigestCard from '../../components/DigestCard.astro';
+import DigestLayout from '../../layouts/DigestLayout.astro';
+
+const issues = (await getCollection('digests')).sort(
+  (a, b) => b.data.publicationDate.valueOf() - a.data.publicationDate.valueOf(),
+);
+const topicCounts = [...issues.reduce((counts, issue) => {
+  for (const topic of issue.data.topics) counts.set(topic, (counts.get(topic) ?? 0) + 1);
+  return counts;
+}, new Map<string, number>())].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+---
+
+<DigestLayout
+  title="Friday AI Engineering Brief"
+  description="Weekly research notes on AI-assisted software delivery, agentic workflows, engineering retrieval, testing automation, and human verification."
+  canonicalPath="/digest/"
+>
+  <header class="digest-hero">
+    <p class="kicker mono">Weekly research · practical engineering</p>
+    <h1>Friday AI<br />Engineering Brief</h1>
+    <p class="digest-deck">
+      A historically dated record of the research shaping my work on AI-native engineering systems—what changed,
+      why it matters, and what is worth trying next.
+    </p>
+    <dl class="digest-stats mono">
+      <div><dt>Issues</dt><dd>{issues.length}</dd></div>
+      <div><dt>Findings</dt><dd>{issues.reduce((total, issue) => total + issue.data.findingIds.length, 0)}</dd></div>
+      <div><dt>First issue</dt><dd>{issues.at(-1)?.data.publicationDate.toISOString().slice(0, 10)}</dd></div>
+    </dl>
+  </header>
+
+  <section class="digest-topics" aria-labelledby="topics-title">
+    <h2 id="topics-title" class="mono">Browse the research trail</h2>
+    <ul>
+      {topicCounts.map(([topic, count]) => (
+        <li><a href={`/digest/topic/${topic}/`}><span>{topic.replaceAll('-', ' ')}</span><small>{count}</small></a></li>
+      ))}
+    </ul>
+  </section>
+
+  <section class="digest-archive" aria-labelledby="archive-title">
+    <div class="digest-section-head">
+      <h2 id="archive-title">All issues</h2>
+      <p class="mono muted">Newest first · original issue dates preserved</p>
+    </div>
+    <div class="digest-grid">
+      {issues.map((entry) => <DigestCard entry={entry} />)}
+    </div>
+  </section>
+</DigestLayout>
+

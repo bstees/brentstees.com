@@ -1,0 +1,34 @@
+---
+import { getCollection } from 'astro:content';
+import DigestCard from '../../../components/DigestCard.astro';
+import DigestLayout from '../../../layouts/DigestLayout.astro';
+
+export async function getStaticPaths() {
+  const issues = await getCollection('digests');
+  const topics = [...new Set(issues.flatMap((issue) => issue.data.topics))];
+  return topics.map((topic) => ({ params: { topic }, props: { topic } }));
+}
+
+const { topic } = Astro.props as { topic: string };
+const issues = (await getCollection('digests'))
+  .filter((issue) => issue.data.topics.includes(topic))
+  .sort((a, b) => b.data.publicationDate.valueOf() - a.data.publicationDate.valueOf());
+const label = topic.replaceAll('-', ' ');
+---
+
+<DigestLayout
+  title={`${label} · Friday AI Engineering Brief`}
+  description={`Friday AI Engineering Brief issues about ${label}.`}
+  canonicalPath={`/digest/topic/${topic}/`}
+>
+  <header class="digest-topic-hero">
+    <a class="digest-back mono" href="/digest/">← All issues</a>
+    <p class="kicker mono">Topic index</p>
+    <h1>{label}</h1>
+    <p class="digest-deck">{issues.length} {issues.length === 1 ? 'issue' : 'issues'} in the research archive.</p>
+  </header>
+  <div class="digest-grid">
+    {issues.map((entry) => <DigestCard entry={entry} />)}
+  </div>
+</DigestLayout>
+
