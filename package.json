@@ -11,11 +11,15 @@
     "build": "npm run validate:digests && astro build",
     "verify:digests": "npm run build && node scripts/verify-digest-build.mjs",
     "preview": "astro preview",
-    "deploy": "astro build && wrangler deploy"
+    "deploy": "astro build && wrangler deploy",
+    "test:browser": "npm run build && playwright test",
+    "test:live": "BASE_URL=https://brentstees.com playwright test"
   },
   "name": "brentstees-com",
   "private": true,
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@playwright/test": "^1.64.1",
     "wrangler": "^4.160.0"
   }
 }

@@ -13,6 +13,7 @@ type Props = {
   publicationDate?: Date;
   topics?: string[];
   pageType?: 'website' | 'article';
+  noindex?: boolean;
 };
 
 const {
@@ -22,6 +23,7 @@ const {
   publicationDate,
   topics = [],
   pageType = 'website',
+  noindex = false,
 } = Astro.props;
 const site = Astro.site ?? new URL('https://brentstees.com');
 const canonical = new URL(canonicalPath, site);
@@ -49,7 +51,7 @@ const jsonLd = pageType === 'article' && publicationDate
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{socialTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
     <link rel="alternate" type="application/rss+xml" title="Friday AI Engineering Brief" href="/digest/rss.xml" />
     <meta property="og:type" content={pageType} />
     <meta property="og:url" content={canonical} />
@@ -118,13 +120,12 @@ const jsonLd = pageType === 'article' && publicationDate
         input.checked = input.value === activeTheme;
         input.addEventListener('change', () => {
           const value = input.value;
-          if (value === 'auto') {
-            delete document.documentElement.dataset.theme;
-            localStorage.removeItem('theme');
-          } else {
-            document.documentElement.dataset.theme = value;
-            localStorage.setItem('theme', value);
-          }
+          if (value === 'auto') delete document.documentElement.dataset.theme;
+          else document.documentElement.dataset.theme = value;
+          try {
+            if (value === 'auto') localStorage.removeItem('theme');
+            else localStorage.setItem('theme', value);
+          } catch {}
         });
       }
     </script>

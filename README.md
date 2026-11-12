@@ -6,6 +6,8 @@ Personal site for brentstees.com. Astro 7 + vanilla CSS, zero client framework, 
 npm install
 npm run dev      # http://localhost:4321
 npm run build    # → dist/ (plain static files: any static host works)
+npm run test:browser   # build, then Playwright + axe (Chromium, Firefox, WebKit)
+npm run test:live      # the same suite against https://brentstees.com
 ```
 
 ## Structure

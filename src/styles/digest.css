@@ -3,7 +3,6 @@
 .digest-body {
   min-block-size: 100dvh;
   background:
-    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 100% 6rem,
     radial-gradient(50rem circle at 85% -10%, var(--glow), transparent 70%),
     var(--bg);
 }
@@ -29,6 +28,7 @@
   align-items: center;
   gap: 0.85rem;
   inline-size: fit-content;
+  min-block-size: 2.75rem;
   text-decoration: none;
   line-height: 1.15;
 }
@@ -114,7 +114,7 @@
   inline-size: fit-content;
 }
 
-.digest-stats div { display: grid; gap: 0.4rem; min-inline-size: 9rem; padding: 1rem 1.2rem; background: var(--surface); }
+.digest-stats div { flex: 1 1 9rem; display: grid; gap: 0.4rem; min-inline-size: 9rem; padding: 1rem 1.2rem; background: var(--surface); }
 .digest-stats dt { color: var(--muted); font-size: 0.67rem; text-transform: uppercase; letter-spacing: 0.08em; }
 .digest-stats dd { margin: 0; color: var(--ink); font-size: 1rem; font-weight: 500; }
 
@@ -182,7 +182,7 @@
 .digest-topic-list a { padding: 0.25rem 0.62rem; font-size: 0.7rem; }
 .digest-card-link { margin-block-start: auto; padding-block-start: 1.75rem; color: var(--accent-ink); font-weight: 500; text-decoration: none; }
 
-.digest-back { display: inline-flex; margin-block-end: 2.5rem; color: var(--muted); text-decoration: none; }
+.digest-back { display: inline-flex; padding-block: 0.15rem; margin-block-end: 2.5rem; color: var(--muted); text-decoration: none; }
 .digest-back:hover { color: var(--accent-ink); }
 .digest-issue-head .kicker { margin-block-end: 1rem; }
 .digest-byline { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-block-start: 1.5rem; color: var(--muted); font-size: 0.9rem; }
@@ -253,12 +253,13 @@
   border-block-start: 1px solid var(--line);
   font-size: 0.7rem;
 }
+.digest-footer a { display: inline-block; padding-block: 0.3rem; }
 .digest-footer a:hover { color: var(--accent-ink); }
 
 @media (max-width: 48rem) {
-  .digest-masthead { grid-template-columns: 1fr auto; }
-  .digest-masthead nav,
-  .digest-profiles { display: none; }
+  /* Wrap in source order so the tab order still matches what is on screen. */
+  .digest-masthead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; padding-block: 0.75rem; }
+  .digest-profiles { gap: 1rem; }
   .digest-topics { grid-template-columns: 1fr; }
   .digest-grid { grid-template-columns: 1fr; }
   .digest-card:nth-child(odd) { border-inline-end: 0; }
@@ -276,6 +277,17 @@
   .digest-issue-head h1 { font-size: clamp(2.5rem, 15vw, 4rem); }
 }
 
+/* Below the two-column width the findings nav stays, as a contents list above the prose. */
 @media (max-width: 64rem) {
   .digest-issue-body.has-toc { display: block; }
+  .digest-toc {
+    position: static;
+    max-block-size: none;
+    overflow: visible;
+    margin-block-start: 2.5rem;
+    padding-block-end: 1.5rem;
+    border-block-end: 1px solid var(--line);
+  }
+  .digest-toc a { padding-block: 0.55rem; }
+  .digest-toc .label { display: block; }
 }

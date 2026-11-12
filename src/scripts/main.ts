@@ -1,5 +1,6 @@
 // Progressive enhancement only: every section reads correctly without this file.
 import type { KbEntry } from '../data/site';
+import { scrollSpy } from './scroll-spy';
 
 const root = document.documentElement;
 const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -26,19 +27,7 @@ document.querySelectorAll<HTMLInputElement>('input[name="lens"]').forEach((el) =
 );
 
 /* ---- Scroll-spy ---------------------------------------------------------- */
-const tocLinks = new Map(
-  [...document.querySelectorAll<HTMLAnchorElement>('.toc a')].map((a) => [a.hash.slice(1), a]),
-);
-const spy = new IntersectionObserver(
-  (entries) => {
-    for (const e of entries) {
-      if (!e.isIntersecting) continue;
-      tocLinks.forEach((a, id) => a.setAttribute('aria-current', String(id === e.target.id)));
-    }
-  },
-  { rootMargin: '-35% 0px -60% 0px' },
-);
-tocLinks.forEach((_, id) => { const s = document.getElementById(id); if (s) spy.observe(s); });
+scrollSpy('.toc a', 0.4);
 
 /* ---- Cursor spotlight ---------------------------------------------------- */
 const spot = document.querySelector<HTMLElement>('.spotlight');

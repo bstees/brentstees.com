@@ -32,7 +32,7 @@ const dateLabel = entry.data.publicationDate.toLocaleDateString('en-US', {
       <li><a href={`/digest/topic/${topic}/`}>{topic.replaceAll('-', ' ')}</a></li>
     ))}
   </ul>
-  <a class="digest-card-link mono" href={`/digest/${entry.id}/`} aria-label={`Read ${entry.data.title}`}>
+  <a class="digest-card-link mono" href={`/digest/${entry.id}/`} aria-label={`Read issue: ${entry.data.title}`}>
     Read issue <span aria-hidden="true">↗</span>
   </a>
 </article>

@@ -227,7 +227,7 @@ const byId = (p: (typeof projects)[number]) => Object.fromEntries(p.nodes.map((n
           {latestBrief && (
             <article class="brief-latest" aria-labelledby="brief-latest-t">
               <p class="mono muted">
-                Latest · Issue {String(latestBrief.data.issueNumber).padStart(2, '0')} ·
+                Latest · Issue {String(latestBrief.data.issueNumber).padStart(2, '0')} ·{' '}
                 <time datetime={latestBrief.data.publicationDate.toISOString().slice(0, 10)}>{briefDate}</time>
               </p>
               <h3 id="brief-latest-t"><a href={`/digest/${latestBrief.id}/`}>{latestBrief.data.title}</a></h3>
