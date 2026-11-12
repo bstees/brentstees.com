@@ -1,77 +1,170 @@
+// Fail-closed checks for every issue of the Friday AI Engineering Brief.
+// Runs before each build: one problem anywhere stops the site from publishing.
+// The per-item rules come from nuk's retired packages/editorial validator.
 import { readdir, readFile } from 'node:fs/promises';
-import path from 'node:path';
+import { classifyFocusAreas, isWithinCoverage } from './brief/relevance.mjs';
 
 const contentDirectory = new URL('../src/content/digests/', import.meta.url);
-const filenames = (await readdir(contentDirectory))
-  .filter((filename) => filename.endsWith('.md'))
-  .sort();
+const DAY = 86_400_000;
+const ARCHIVE_ISSUES = 13; // 2026-08-14 … 2026-11-06, imported as a set; none may go missing.
+// Archive issues predate the fixed item format. Issues from this date on must follow
+// scripts/brief/issue-template.md exactly.
+const STRICT_FROM = process.env.BRIEF_STRICT_FROM ?? '2026-11-07';
+const MIN_FINDINGS = 3;
+const MAX_FINDINGS = 5;
+const MAX_QUOTE_WORDS = 20;
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const SOURCE_MARKUP = /|<\/?(?:box|text|Link|Cite|Entity)\b|\{#(?:each|if)|\{\/(?:each|if)\}/;
+const REVIEW_FLAG = /\[REVIEW\b|\bTODO\b|\bTBD\b|\bFIXME\b/;
 
-const fail = (message) => {
-  throw new Error(`Digest validation failed: ${message}`);
-};
+const errors = [];
+const filenames = (await readdir(contentDirectory)).filter((filename) => filename.endsWith('.md')).sort();
+if (filenames.length < ARCHIVE_ISSUES) {
+  errors.push(`expected at least ${ARCHIVE_ISSUES} dated issues, found ${filenames.length}`);
+}
 
-if (filenames.length !== 13) fail(`expected 13 dated issues, found ${filenames.length}`);
+const utc = (date) => new Date(`${date}T00:00:00Z`);
+const longDate = (date) =>
+  utc(date).toLocaleDateString('en-US', { timeZone: 'UTC', month: 'long', day: 'numeric', year: 'numeric' });
+const words = (text) => (text.trim() === '' ? 0 : text.trim().split(/\s+/).length);
+
+/** Split the body into numbered findings: "## 1. Title" or "### 1. Title" up to the next heading. */
+function readFindings(body) {
+  const headings = [...body.matchAll(/^(#{2,3}) (.+)$/gm)];
+  return headings
+    .map((heading, index) => ({
+      level: heading[1].length,
+      number: Number(heading[2].match(/^(\d+)\.\s/)?.[1]),
+      title: heading[2].replace(/^\d+\.\s*/, ''),
+      text: body.slice(heading.index + heading[0].length, headings[index + 1]?.index ?? body.length),
+    }))
+    .filter((finding) => Number.isInteger(finding.number));
+}
+
+/** "*November 3 · Kind of source*" → ISO date in or just before the issue's year. */
+function readDateline(text, issueDate) {
+  const match = text.match(/^\*([A-Z][a-z]+ \d{1,2})(?:, (\d{4}))? · [^*\n]+\*$/m);
+  if (!match) return null;
+  const year = Number(match[2] ?? issueDate.slice(0, 4));
+  for (const candidate of [year, year - 1]) {
+    const parsed = new Date(`${match[1]}, ${candidate} UTC`);
+    if (Number.isNaN(parsed.valueOf())) return null;
+    if (parsed.valueOf() <= utc(issueDate).valueOf() || match[2]) return parsed.toISOString().slice(0, 10);
+  }
+  return null;
+}
 
 const records = [];
 const messageIds = new Set();
 const findingIds = new Set();
 
 for (const filename of filenames) {
+  const fail = (message) => errors.push(`${filename}: ${message}`);
   const source = await readFile(new URL(filename, contentDirectory), 'utf8');
   const frontmatterMatch = source.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
-  if (!frontmatterMatch) fail(`${filename} has invalid frontmatter boundaries`);
+  if (!frontmatterMatch) {
+    fail('invalid frontmatter boundaries');
+    continue;
+  }
   const [, frontmatter, body] = frontmatterMatch;
-
   const readScalar = (key) => frontmatter.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))?.[1]?.trim();
-  const date = readScalar('publicationDate');
-  const issueNumber = Number(readScalar('issueNumber'));
-  const title = JSON.parse(readScalar('title'));
-  const sourceMessageId = JSON.parse(readScalar('sourceMessageId'));
-  const findings = JSON.parse(readScalar('findingIds'));
+  const readJson = (key) => {
+    try {
+      return JSON.parse(readScalar(key) ?? 'null');
+    } catch {
+      return null;
+    }
+  };
 
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(date ?? '')) fail(`${filename} has an invalid publicationDate`);
-  if (filename !== `${date}.md`) fail(`${filename} does not match publicationDate ${date}`);
-  if (!title.endsWith(new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', {
-    timeZone: 'UTC', month: 'long', day: 'numeric', year: 'numeric',
-  }))) fail(`${filename} title does not preserve its source date`);
-  if (new Date(`${date}T00:00:00Z`).getUTCDay() !== 5) fail(`${filename} is not a Friday`);
-  if (!Number.isInteger(issueNumber) || issueNumber < 1) fail(`${filename} has an invalid issueNumber`);
-  if (messageIds.has(sourceMessageId)) fail(`${filename} repeats sourceMessageId ${sourceMessageId}`);
+  const date = readScalar('publicationDate') ?? '';
+  const issueNumber = Number(readScalar('issueNumber'));
+  const title = readJson('title');
+  const description = readJson('description');
+  const sourceConversationId = readJson('sourceConversationId');
+  const sourceMessageId = readJson('sourceMessageId');
+  const findings = readJson('findingIds');
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(utc(date).valueOf())) {
+    fail('invalid publicationDate');
+    continue;
+  }
+  if (filename !== `${date}.md`) fail(`filename does not match publicationDate ${date}`);
+  if (utc(date).getUTCDay() !== 5) fail('publicationDate is not a Friday');
+  if (typeof title !== 'string' || !title.endsWith(longDate(date))) fail('title must be a quoted string ending in the issue date');
+  if (typeof description !== 'string' || description.length < 1 || description.length > 240) {
+    fail('description must be a quoted string of 1–240 characters');
+  }
+  if (!Number.isInteger(issueNumber) || issueNumber < 1) fail('invalid issueNumber');
+  if (typeof sourceConversationId !== 'string' || !UUID.test(sourceConversationId)) fail('sourceConversationId is not a UUID');
+  if (typeof sourceMessageId !== 'string' || !UUID.test(sourceMessageId)) fail('sourceMessageId is not a UUID');
+  else if (messageIds.has(sourceMessageId)) fail(`repeats sourceMessageId ${sourceMessageId}`);
   messageIds.add(sourceMessageId);
 
-  if (!Array.isArray(findings) || findings.length < 1) fail(`${filename} has no findingIds`);
-  for (const findingId of findings) {
-    if (!findingId.startsWith(`F-${date}-`)) fail(`${filename} has mismatched findingId ${findingId}`);
+  if (!Array.isArray(findings) || findings.length < 1) {
+    fail('no findingIds');
+    continue;
+  }
+  findings.forEach((findingId, index) => {
+    if (findingId !== `F-${date}-${String(index + 1).padStart(2, '0')}`) fail(`findingId ${findingId} is mismatched or out of order`);
     if (findingIds.has(findingId)) fail(`duplicate findingId ${findingId}`);
     findingIds.add(findingId);
-  }
+  });
+  if (findings.length < MIN_FINDINGS) fail(`an issue needs at least ${MIN_FINDINGS} findings`);
+  if (findings.length > MAX_FINDINGS) fail(`an issue cannot have more than ${MAX_FINDINGS} findings`);
 
   const sourceLinks = [...body.matchAll(/\]\((https:\/\/[^)]+)\)/g)].map((match) => match[1]);
-  if (new Set(sourceLinks).size < findings.length) {
-    fail(`${filename} has fewer primary-source links than findings`);
+  if (new Set(sourceLinks).size < findings.length) fail('fewer primary-source links than findings');
+  if (/\]\(http:\/\//.test(body)) fail('contains a non-HTTPS link');
+  if (SOURCE_MARKUP.test(body)) fail('contains ChatGPT-only presentation markup');
+  if (REVIEW_FLAG.test(body)) fail('still carries a review flag ([REVIEW …], TODO, TBD or FIXME); a person must resolve it');
+
+  // Every finding is a numbered heading with its consequence and its takeaway.
+  const strict = date >= STRICT_FROM;
+  const sections = readFindings(body);
+  if (sections.length !== findings.length) {
+    fail(`${findings.length} findingIds but ${sections.length} numbered finding headings`);
   }
-  if (/\]\(http:\/\//.test(body)) fail(`${filename} contains a non-HTTPS source link`);
-  if (/|<\/?(?:box|text|Link|Cite|Entity)\b|\{#(?:each|if)|\{\/(?:each|if)\}/.test(body)) {
-    fail(`${filename} contains ChatGPT-only presentation markup`);
-  }
+  if (new Set(sections.map((section) => section.level)).size > 1) fail('finding headings mix ## and ###');
+  sections.forEach((section, index) => {
+    const failItem = (message) => fail(`finding ${index + 1}: ${message}`);
+    if (section.number !== index + 1) failItem(`is numbered ${section.number}`);
+    if (section.title.trim() === '') failItem('has no title');
+    if (!/^\*\*Why it matters:?\*\*/im.test(section.text)) failItem('missing "Why it matters"');
+    if (!/^\*\*Practical takeaway:?\*\*/im.test(section.text)) failItem('missing "Practical takeaway"');
+    for (const quote of section.text.matchAll(/^>\s?(.+)$/gm)) {
+      if (words(quote[1]) > MAX_QUOTE_WORDS) failItem(`quote exceeds the ${MAX_QUOTE_WORDS}-word limit`);
+    }
+    if (!strict) return;
+
+    if (section.level !== 2) failItem('heading must be "## N. Title"');
+    if (!/^\*\*What changed:?\*\*/m.test(section.text)) failItem('missing "What changed"');
+    if (!/^\*\*Source:?\*\*:? \[[^\]]+\]\(https:\/\/[^)\s]+\)/m.test(section.text)) {
+      failItem('missing a "**Source:** [title](https://…)" line');
+    }
+    const itemDate = readDateline(section.text, date);
+    const coverageStart = new Date(utc(date).valueOf() - 6 * DAY).toISOString().slice(0, 10);
+    if (!itemDate) failItem('missing a "*Month D · Kind of source*" dateline');
+    else if (!isWithinCoverage(itemDate, coverageStart, date)) {
+      failItem(`dated ${itemDate}, outside the coverage window ${coverageStart} … ${date}`);
+    }
+    if (classifyFocusAreas(`${section.title} ${section.text}`).length === 0) {
+      failItem('out of scope: no software-engineering focus area matches (see scripts/brief/relevance.mjs)');
+    }
+  });
 
   records.push({ date, issueNumber });
 }
 
 records.sort((a, b) => a.date.localeCompare(b.date));
-for (let index = 0; index < records.length; index += 1) {
-  const record = records[index];
-  if (record.issueNumber !== index + 1) fail(`${record.date} has non-sequential issueNumber ${record.issueNumber}`);
-  if (index > 0) {
-    const previous = new Date(`${records[index - 1].date}T00:00:00Z`);
-    const current = new Date(`${record.date}T00:00:00Z`);
-    if (current.valueOf() - previous.valueOf() !== 7 * 24 * 60 * 60 * 1000) {
-      fail(`${record.date} is not seven days after ${records[index - 1].date}`);
-    }
+records.forEach((record, index) => {
+  if (record.issueNumber !== index + 1) errors.push(`${record.date}: non-sequential issueNumber ${record.issueNumber}`);
+  if (index > 0 && utc(record.date).valueOf() - utc(records[index - 1].date).valueOf() !== 7 * DAY) {
+    errors.push(`${record.date}: not seven days after ${records[index - 1].date}`);
   }
+});
+
+if (errors.length > 0) {
+  console.error(`Digest validation failed:\n${errors.map((error) => `  - ${error}`).join('\n')}`);
+  process.exit(1);
 }
-
-if (findingIds.size !== 61) fail(`expected 61 findings, found ${findingIds.size}`);
-
 console.log(`Validated ${records.length} dated digest issues and ${findingIds.size} findings.`);
-

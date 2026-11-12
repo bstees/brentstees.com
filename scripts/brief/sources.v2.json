@@ -1,0 +1,83 @@
+{
+  "schemaVersion": 2,
+  "updatedAt": "2026-11-11",
+  "sources": [
+    {
+      "id": "arxiv-software-engineering",
+      "name": "arXiv — Software Engineering",
+      "feedUrl": "https://export.arxiv.org/api/query?search_query=cat%3Acs.SE&sortBy=submittedDate&sortOrder=descending&max_results=50",
+      "siteUrl": "https://arxiv.org/list/cs.SE/recent",
+      "enabled": true,
+      "primary": true,
+      "candidateFocusAreas": [
+        "ai-assisted-delivery",
+        "agentic-ides",
+        "engineering-rag",
+        "testing-automation",
+        "human-in-the-loop"
+      ],
+      "note": "Primary preprint metadata. Editors must identify preprint status, inspect the paper, and scope benchmark claims to the evaluated tasks."
+    },
+    {
+      "id": "arxiv-artificial-intelligence",
+      "name": "arXiv — Artificial Intelligence",
+      "feedUrl": "https://export.arxiv.org/api/query?search_query=cat%3Acs.AI&sortBy=submittedDate&sortOrder=descending&max_results=50",
+      "siteUrl": "https://arxiv.org/list/cs.AI/recent",
+      "enabled": true,
+      "primary": true,
+      "candidateFocusAreas": [
+        "ai-assisted-delivery",
+        "engineering-rag",
+        "testing-automation",
+        "human-in-the-loop"
+      ],
+      "note": "Primary preprint metadata. General agent research is included only when the item has concrete software-engineering relevance."
+    },
+    {
+      "id": "arxiv-databases",
+      "name": "arXiv — Databases",
+      "feedUrl": "https://export.arxiv.org/api/query?search_query=cat%3Acs.DB&sortBy=submittedDate&sortOrder=descending&max_results=50",
+      "siteUrl": "https://arxiv.org/list/cs.DB/recent",
+      "enabled": true,
+      "primary": true,
+      "candidateFocusAreas": [
+        "ai-assisted-delivery",
+        "engineering-rag",
+        "testing-automation",
+        "human-in-the-loop"
+      ],
+      "note": "Primary preprint metadata for data and retrieval systems. Performance and correctness claims require workload and verification-boundary review."
+    },
+    {
+      "id": "github-copilot-changelog",
+      "name": "GitHub Copilot Changelog",
+      "feedUrl": "https://github.blog/changelog/feed/?label=copilot",
+      "siteUrl": "https://github.blog/changelog/label/copilot/",
+      "enabled": true,
+      "primary": true,
+      "candidateFocusAreas": [
+        "ai-assisted-delivery",
+        "agentic-ides",
+        "testing-automation",
+        "human-in-the-loop"
+      ],
+      "note": "First-party product changelog. Editors must distinguish availability from preview status and treat productivity or quality statements as vendor claims."
+    },
+    {
+      "id": "openai-news",
+      "name": "OpenAI",
+      "feedUrl": "https://openai.com/news/rss.xml",
+      "siteUrl": "https://openai.com/news/",
+      "enabled": true,
+      "primary": true,
+      "candidateFocusAreas": [
+        "ai-assisted-delivery",
+        "agentic-ides",
+        "engineering-rag",
+        "testing-automation",
+        "human-in-the-loop"
+      ],
+      "note": "Primary company announcements. The item-level filter excludes unrelated news; editors retain attribution and independently check consequential claims."
+    }
+  ]
+}

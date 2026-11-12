@@ -18,8 +18,8 @@ export default defineConfig({
   webServer: process.env.BASE_URL
     ? undefined
     : {
-        command: 'npm run preview -- --host 127.0.0.1 --port 4321',
+        command: 'node tests/serve-dist.mjs',
         url: baseURL,
-        reuseExistingServer: true,
+        reuseExistingServer: !process.env.CI,
       },
 });

@@ -13,7 +13,8 @@
     "preview": "astro preview",
     "deploy": "astro build && wrangler deploy",
     "test:browser": "npm run build && playwright test",
-    "test:live": "BASE_URL=https://brentstees.com playwright test"
+    "test:live": "BASE_URL=https://brentstees.com playwright test",
+    "brief:new": "node scripts/brief/new-issue.mjs"
   },
   "name": "brentstees-com",
   "private": true,
