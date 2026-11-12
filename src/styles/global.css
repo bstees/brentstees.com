@@ -362,6 +362,14 @@ a:hover > .arrow { translate: 0.15em -0.15em; }
 /* ---- Contact ------------------------------------------------------------- */
 .cta-line { font-size: var(--step-2); font-weight: 700; letter-spacing: -0.02em; line-height: 1.25; max-width: 22ch; text-wrap: balance; margin-block-end: 1rem; }
 #contact > .muted { max-width: 55ch; }
+.brief-latest {
+  display: grid; gap: 0.6rem; max-width: 62ch;
+  margin-block-start: 2rem; padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--line);
+  & h3 a { text-decoration: none; &:hover { color: var(--accent-ink); } }
+  & > p:last-child { color: var(--muted); }
+}
+.foot a:hover { color: var(--accent-ink); }
 .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; margin-block-start: 2rem; }
 .button {
   display: inline-flex; align-items: center; gap: 0.5rem;

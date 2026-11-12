@@ -4,6 +4,7 @@
 // Feature flags: flip on when a section is ready to ship.
 export const features = {
   console: false, // agent console: on hold until the real version is designed
+  brief: true, // AI engineering brief teaser, nav entry, and footer link
 };
 
 export const links = {

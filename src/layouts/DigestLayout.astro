@@ -4,6 +4,7 @@ import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
 import '../styles/global.css';
 import '../styles/digest.css';
+import { links } from '../data/site';
 
 type Props = {
   title: string;
@@ -81,6 +82,11 @@ const jsonLd = pageType === 'article' && publicationDate
         <a href="/digest/">All issues</a>
         <a href="/digest/rss.xml">RSS</a>
       </nav>
+      <ul class="profiles digest-profiles" aria-label="Profiles">
+        <li><a href={links.github}>GitHub</a></li>
+        <li><a href={links.linkedin}>LinkedIn</a></li>
+        <li><a href={links.codepen}>CodePen</a></li>
+      </ul>
       <fieldset class="theme digest-theme">
         <legend class="sr-only">Color theme</legend>
         {['auto', 'light', 'dark'].map((theme) => (
@@ -98,7 +104,7 @@ const jsonLd = pageType === 'article' && publicationDate
 
     <footer class="digest-footer mono muted">
       <p>Research notes on AI-assisted software delivery, verification, and engineering systems.</p>
-      <p><a href="/digest/index.json">JSON index</a> · <a href="/digest/sitemap.xml">Sitemap</a></p>
+      <p><a href="/">← brentstees.com</a> · <a href="/digest/index.json">JSON index</a> · <a href="/digest/sitemap.xml">Sitemap</a></p>
     </footer>
 
     <script is:inline>

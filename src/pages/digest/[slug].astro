@@ -23,7 +23,17 @@ type Props = {
 };
 
 const { entry, newer, older } = Astro.props;
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+// Numbered findings ("1. Title") become the issue's scroll-spy nav, matching the homepage rail.
+const numbered = headings.filter((h) => (h.depth === 2 || h.depth === 3) && /^\d+\.\s/.test(h.text));
+const itemDepth = Math.min(...numbered.map((h) => h.depth));
+const items = numbered
+  .filter((h) => h.depth === itemDepth)
+  .map((h) => ({
+    slug: h.slug,
+    num: h.text.match(/^(\d+)\./)![1].padStart(2, '0'),
+    label: h.text.replace(/^\d+\.\s*/, ''),
+  }));
 const dateIso = entry.data.publicationDate.toISOString().slice(0, 10);
 const dateLabel = entry.data.publicationDate.toLocaleDateString('en-US', {
   timeZone: 'UTC',
@@ -64,8 +74,20 @@ const dateLabel = entry.data.publicationDate.toLocaleDateString('en-US', {
       <span>Originally issued {dateLabel}. Edited for web formatting, direct primary-source links, and clearly documented source corrections.</span>
     </div>
 
-    <div class="digest-prose">
-      <Content />
+    <div class:list={['digest-issue-body', { 'has-toc': items.length > 1 }]}>
+      {items.length > 1 && (
+        <nav class="toc digest-toc" aria-label="Findings in this issue">
+          <p class="kicker mono">In this issue</p>
+          <ol>
+            {items.map((item) => (
+              <li><a href={`#${item.slug}`}><span class="mono">{item.num}</span><span class="bar" aria-hidden="true"></span><span class="label">{item.label}</span></a></li>
+            ))}
+          </ol>
+        </nav>
+      )}
+      <div class="digest-prose">
+        <Content />
+      </div>
     </div>
   </article>
 
@@ -78,3 +100,25 @@ const dateLabel = entry.data.publicationDate.toLocaleDateString('en-US', {
       : <span></span>}
   </nav>
 </DigestLayout>
+
+<script>
+  // Scroll-spy for the findings nav: same behavior as the homepage rail.
+  const links = new Map(
+    [...document.querySelectorAll<HTMLAnchorElement>('.digest-toc a')].map((a) => [decodeURIComponent(a.hash.slice(1)), a]),
+  );
+  if (links.size && 'IntersectionObserver' in window) {
+    const spy = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          links.forEach((a, id) => a.setAttribute('aria-current', String(id === e.target.id)));
+        }
+      },
+      { rootMargin: '-20% 0px -70% 0px' },
+    );
+    links.forEach((_, id) => {
+      const el = document.getElementById(id);
+      if (el) spy.observe(el);
+    });
+  }
+</script>
