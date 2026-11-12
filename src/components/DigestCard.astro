@@ -1,0 +1,39 @@
+---
+type DigestEntry = {
+  id: string;
+  data: {
+    title: string;
+    description: string;
+    publicationDate: Date;
+    issueNumber: number;
+    topics: string[];
+    findingIds: string[];
+  };
+};
+
+const { entry } = Astro.props as { entry: DigestEntry };
+const dateLabel = entry.data.publicationDate.toLocaleDateString('en-US', {
+  timeZone: 'UTC',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<article class="digest-card">
+  <p class="digest-card-meta mono">
+    <span>Issue {String(entry.data.issueNumber).padStart(2, '0')}</span>
+    <time datetime={entry.data.publicationDate.toISOString().slice(0, 10)}>{dateLabel}</time>
+  </p>
+  <h2><a href={`/digest/${entry.id}/`}>{entry.data.title}</a></h2>
+  <p>{entry.data.description}</p>
+  <ul class="digest-topic-list" aria-label="Topics">
+    {entry.data.topics.slice(0, 4).map((topic) => (
+      <li><a href={`/digest/topic/${topic}/`}>{topic.replaceAll('-', ' ')}</a></li>
+    ))}
+  </ul>
+  <a class="digest-card-link mono" href={`/digest/${entry.id}/`} aria-label={`Read ${entry.data.title}`}>
+    Read issue <span aria-hidden="true">↗</span>
+  </a>
+</article>
+
