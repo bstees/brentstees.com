@@ -33,6 +33,7 @@ export type Project = {
   build: string;
   stack: string[];
   href: string;
+  evidence: { summary: string; links: [string, string][]; limitations: string };
   nodes: MapNode[];
   edges: [string, string][];
 };
@@ -51,6 +52,15 @@ export const projects: Project[] = [
       'A versioned asset pipeline: shared standards and skills sync into consumer repos as a managed overlay, with drift triage, calver releases, a deterministic repo-surface index, and an instruction-evaluation harness for AI-facing Markdown.',
     stack: ['Node', 'React', 'Vite', 'Express', 'D3', 'Docker', 'MySQL'],
     href: 'https://github.com/bstees/ai-native',
+    evidence: {
+      summary: 'Start with task contracts and evidence validation: inspect how approved scope, repository provenance, and review requirements are checked rather than inferred from an agent’s summary.',
+      links: [
+        ['Standards, workflows, and local setup', 'https://github.com/bstees/ai-native#readme'],
+        ['Implemented digest findings and review history', 'https://github.com/bstees/ai-native/pull/1'],
+        ['Delivery scope and remaining gates', 'https://github.com/bstees/ai-native/blob/main/planning/weekly-digest-delivery-plan.md'],
+      ],
+      limitations: 'An evolving engineering workflow project. Repository-recorded verification is not a claim of measured productivity gains or independent production certification.',
+    },
     nodes: [
       { id: 'signals', label: 'Signals', x: 11, y: 22, detail: 'Monitored sources and evidence inputs. Changes to the system start from observed friction, not opinion.' },
       { id: 'decisions', label: 'Decisions', x: 11, y: 78, detail: 'What we believe and why. Decision records make the reasoning behind every standard inspectable.' },
@@ -79,6 +89,14 @@ export const projects: Project[] = [
       'A Fastify hub exposing MCP tools and a WebSocket feed. A VS Code extension registers each window and reports idle state; sessions call orca_request_input, which raises a dashboard banner and an ntfy push. State lives in SQLite; an Electron shell bundles server and UI.',
     stack: ['MCP', 'Fastify', 'WebSockets', 'React', 'VS Code API', 'SQLite', 'Electron'],
     href: 'https://github.com/bstees/Orca',
+    evidence: {
+      summary: 'Follow the path from an agent requesting input to the dashboard response. The repository explains the server, editor extension, MCP interface, and demo mode.',
+      links: [
+        ['Architecture, demo mode, and setup', 'https://github.com/bstees/Orca#readme'],
+        ['Implementation and test packages', 'https://github.com/bstees/Orca/tree/main/packages'],
+      ],
+      limitations: 'An experimental development tool. Review the current security and deployment guidance before use; remote access and packaged clients need environment-specific validation.',
+    },
     nodes: [
       { id: 'agent', label: 'AI session', x: 11, y: 22, detail: 'Each coding agent talks to Orca through MCP tools. When it needs a human, it calls orca_request_input.' },
       { id: 'ext', label: 'VS Code ext.', x: 11, y: 78, detail: 'Registers each editor window with the server on startup and reports status plus idle detection.' },
@@ -132,7 +150,7 @@ export const kb: KbEntry[] = [
   {
     id: 'overview',
     keys: ['who', 'brent', 'about', 'summary', 'background', 'overview', 'introduce', 'tldr', 'yourself'],
-    answer: 'Brent is a software engineering manager who retooled as an agentic product and automation engineer. He pairs team leadership and creative direction with hands-on work: CSS and UX architecture, and the AI workflows that help web apps scale.',
+    answer: 'Brent combines engineering leadership experience with hands-on product and automation work. He pairs team leadership and creative direction with hands-on work: CSS and UX architecture, and the AI workflows that help web apps scale.',
     cite: '#about', citeLabel: 'About',
   },
   {
@@ -198,7 +216,7 @@ export const kb: KbEntry[] = [
   {
     id: 'contact',
     keys: ['contact', 'reach', 'email', 'hire', 'hiring', 'available', 'availability', 'work', 'together', 'connect', 'linkedin', 'talk'],
-    answer: 'The best route is LinkedIn. He’s interested in conversations about agentic product engineering, AI-native development, developer experience, and hands-on product systems work.',
+    answer: 'The best route is LinkedIn. He’s interested in remote roles combining engineering leadership and hands-on development, especially developer experience, enablement, and AI-assisted delivery.',
     cite: '#contact', citeLabel: 'Contact',
   },
 ];

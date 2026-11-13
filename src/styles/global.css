@@ -387,3 +387,9 @@ a:hover > .arrow { translate: 0.15em -0.15em; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
   html { scroll-behavior: auto; }
 }
+
+/* Evidence remains readable without scripting and follows the existing project rhythm. */
+.project-evidence { margin-block: 1.5rem; padding-inline-start: 1rem; border-inline-start: 2px solid var(--accent); }
+.project-evidence h4 { font-size: 1rem; margin-block-end: .5rem; }
+.project-evidence ul { padding-inline-start: 1.2rem; margin-block: .75rem; }
+.project-evidence li + li { margin-block-start: .35rem; }
