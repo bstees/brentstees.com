@@ -109,6 +109,26 @@ export const projects: Project[] = [
   },
 ];
 
+// Historical outcomes from Brent's owner-provided July 2026 resume.
+// These are not assertions about his current title, direct reports, or all-platform coverage.
+export const careerHighlights = [
+  {
+    metric: '4 teams · 24 engineers',
+    title: 'Engineering leadership',
+    detail: 'Led four engineering teams totaling 24 engineers supporting the Sitch Video Platform.',
+  },
+  {
+    metric: 'One month to days',
+    title: 'Release testing',
+    detail: 'Reduced release testing time through automation and delivery-workflow improvements.',
+  },
+  {
+    metric: 'Approximately 75%',
+    title: 'Automated unit test coverage',
+    detail: 'Increased automated unit test coverage from near zero to approximately 75%.',
+  },
+];
+
 export const capabilities = [
   {
     title: 'Agentic workflows',

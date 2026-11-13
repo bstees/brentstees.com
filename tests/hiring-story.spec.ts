@@ -28,3 +28,19 @@ test('both audience lenses keep the hiring and contact path', async ({ page }) =
   await expect(page).toHaveURL(/#contact$/);
   await expect(page.locator('#contact')).toContainText('remote roles');
 });
+
+
+test('historical career proof is visible in both lenses and links from the introduction', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Leadership outcomes', exact: true }).click();
+  await expect(page).toHaveURL(/#experience$/);
+  const experience = page.locator('#experience');
+  await expect(experience).toContainText('Skyline Technology Solutions');
+  await expect(experience.locator('.career-highlights > li')).toHaveCount(3);
+  await expect(experience).toContainText('4 teams · 24 engineers');
+  await expect(experience).toContainText('One month to days');
+  await expect(experience).toContainText('Approximately 75%');
+  await page.locator('label[for="lens-lead"]').click();
+  await expect(experience).toBeVisible();
+  await expect(page.locator('#contact').getByRole('link', { name: /Discuss a role on LinkedIn/ })).toHaveAttribute('href', 'https://www.linkedin.com/in/brent-stees');
+});

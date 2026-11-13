@@ -393,3 +393,10 @@ a:hover > .arrow { translate: 0.15em -0.15em; }
 .project-evidence h4 { font-size: 1rem; margin-block-end: .5rem; }
 .project-evidence ul { padding-inline-start: 1.2rem; margin-block: .75rem; }
 .project-evidence li + li { margin-block-start: .35rem; }
+
+/* Historical career proof: concise, readable cards in the existing content column. */
+.career-highlights { display: grid; gap: 1rem; margin-block: 1.5rem 2rem; }
+.career-highlights > li { padding: 1.25rem; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.career-highlights .career-metric { font-size: var(--step-2); font-weight: 700; color: var(--accent-ink); line-height: 1.3; margin-block-end: .5rem; }
+.career-highlights h3 { font-size: var(--step-0); margin-block-end: .35rem; }
+.career-highlights h3 + p { color: var(--muted); }
