@@ -2,7 +2,10 @@
 import '@fontsource-variable/manrope';
 import '@fontsource/ibm-plex-mono/400.css';
 import '@fontsource/ibm-plex-mono/500.css';
+import '@nuk-ui/tokens/css';
+import '@nuk-ui/elements/styles.css';
 import '../styles/global.css';
+import '../styles/nuk-bridge.css';
 import '../styles/digest.css';
 import { links } from '../data/site';
 
@@ -80,10 +83,12 @@ const jsonLd = pageType === 'article' && publicationDate
         <span class="digest-mark" aria-hidden="true"></span>
         <span><strong>Brent Stees</strong><small class="mono">AI engineering notes</small></span>
       </a>
-      <nav aria-label="Digest navigation">
-        <a href="/digest/">All issues</a>
-        <a href="/digest/rss.xml">RSS</a>
-      </nav>
+      <nuk-nav class="digest-nav" label="Digest navigation">
+        <ul>
+          <li><a href="/digest/">All issues</a></li>
+          <li><a href="/digest/rss.xml">RSS</a></li>
+        </ul>
+      </nuk-nav>
       <ul class="profiles digest-profiles" aria-label="Profiles">
         <li><a href={links.github}>GitHub</a></li>
         <li><a href={links.linkedin}>LinkedIn</a></li>
@@ -109,6 +114,14 @@ const jsonLd = pageType === 'article' && publicationDate
       <p><a href="/">← brentstees.com</a> · <a href="/digest/index.json">JSON index</a> · <a href="/digest/sitemap.xml">Sitemap</a></p>
     </footer>
 
+    <script>
+      // nuk custom elements used by the digest. Only these two are registered; the rest of the
+      // catalog is tree-shaken out of the bundle.
+      import { NukBreadcrumbs, NukNav } from '@nuk-ui/elements';
+      for (const [tag, element] of [['nuk-nav', NukNav], ['nuk-breadcrumbs', NukBreadcrumbs]] as const) {
+        if (!customElements.get(tag)) customElements.define(tag, element);
+      }
+    </script>
     <script is:inline>
       const themeInputs = document.querySelectorAll('input[name="theme"]');
       let activeTheme = 'auto';

@@ -18,6 +18,12 @@ const topicCounts = [...issues.reduce((counts, issue) => {
   canonicalPath="/digest/"
 >
   <header class="digest-hero">
+    <nuk-breadcrumbs class="digest-crumbs mono">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li aria-current="page">AI engineering brief</li>
+      </ol>
+    </nuk-breadcrumbs>
     <p class="kicker mono">Weekly research · practical engineering</p>
     <h1>Friday AI<br />Engineering Brief</h1>
     <p class="digest-deck">

@@ -53,7 +53,13 @@ const dateLabel = entry.data.publicationDate.toLocaleDateString('en-US', {
 >
   <article class="digest-issue">
     <header class="digest-issue-head">
-      <a class="digest-back mono" href="/digest/">← All issues</a>
+      <nuk-breadcrumbs class="digest-crumbs mono">
+        <ol>
+          <li><a href="/">Home</a></li>
+          <li><a href="/digest/">AI engineering brief</a></li>
+          <li aria-current="page">Issue {String(entry.data.issueNumber).padStart(2, '0')}</li>
+        </ol>
+      </nuk-breadcrumbs>
       <p class="kicker mono">Issue {String(entry.data.issueNumber).padStart(2, '0')}</p>
       <h1>{entry.data.title}</h1>
       <p class="digest-deck">{entry.data.description}</p>
@@ -76,14 +82,14 @@ const dateLabel = entry.data.publicationDate.toLocaleDateString('en-US', {
 
     <div class:list={['digest-issue-body', { 'has-toc': items.length > 1 }]}>
       {items.length > 1 && (
-        <nav class="toc digest-toc" aria-label="Findings in this issue">
+        <nuk-nav class="toc digest-toc" label="Findings in this issue">
           <p class="kicker mono">In this issue</p>
           <ol>
             {items.map((item) => (
               <li><a href={`#${item.slug}`}><span class="mono">{item.num}</span><span class="bar" aria-hidden="true"></span><span class="label">{item.label}</span></a></li>
             ))}
           </ol>
-        </nav>
+        </nuk-nav>
       )}
       <div class="digest-prose">
         <Content />

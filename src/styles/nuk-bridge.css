@@ -1,0 +1,30 @@
+/* Brand → nuk. The site keeps its own tokens (global.css) and assigns nuk's semantic properties
+   from them, so nuk elements render on-brand in both themes without loading @nuk-ui/theme.
+   light-dark() values resolve per element, so the mapping follows the site's theme control. */
+:root {
+  --nuk-color-canvas: var(--bg);
+  --nuk-color-surface: var(--surface);
+  --nuk-color-surface-raised: var(--surface-2);
+  --nuk-color-text: var(--ink);
+  --nuk-color-text-muted: var(--muted);
+  --nuk-color-border: var(--line-strong);
+  --nuk-color-accent: var(--accent); /* fills */
+  --nuk-color-accent-hover: var(--accent);
+  --nuk-color-on-accent: var(--on-accent);
+  --nuk-color-accent-text: var(--accent-ink); /* links and quiet buttons */
+  --nuk-color-accent-text-hover: var(--accent-ink);
+  --nuk-color-focus: var(--focus);
+  --nuk-control-bg: var(--bg);
+
+  --nuk-font-sans: var(--sans);
+  --nuk-font-mono: var(--mono);
+  --nuk-font-size-sm: var(--step--1);
+  --nuk-font-size-md: var(--step-0);
+  --nuk-font-size-lg: var(--step-1);
+  --nuk-font-size-xl: var(--step-2);
+  --nuk-font-size-2xl: var(--step-4);
+  --nuk-line-height-body: 1.65;
+
+  --nuk-radius-lg: var(--radius);
+  --nuk-focus-width: 2px;
+}

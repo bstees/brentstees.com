@@ -22,7 +22,13 @@ const label = topic.replaceAll('-', ' ');
   canonicalPath={`/digest/topic/${topic}/`}
 >
   <header class="digest-topic-hero">
-    <a class="digest-back mono" href="/digest/">← All issues</a>
+    <nuk-breadcrumbs class="digest-crumbs mono">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/digest/">AI engineering brief</a></li>
+        <li aria-current="page"><span class="digest-crumb-topic">{label}</span></li>
+      </ol>
+    </nuk-breadcrumbs>
     <p class="kicker mono">Topic index</p>
     <h1>{label}</h1>
     <p class="digest-deck">{issues.length} {issues.length === 1 ? 'issue' : 'issues'} in the research archive.</p>

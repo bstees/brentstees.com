@@ -38,9 +38,10 @@
 .digest-home small { color: var(--muted); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; }
 .digest-mark { inline-size: 0.68rem; aspect-ratio: 1; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0.34rem var(--glow); }
 
-.digest-masthead nav { display: flex; align-items: center; gap: 1.2rem; font-size: 0.88rem; font-weight: 650; }
-.digest-masthead nav a { text-decoration: none; }
-.digest-masthead nav a:hover { color: var(--accent-ink); }
+/* Links sit in the light DOM of <nuk-nav>, so they are styled here and look the same before upgrade. */
+.digest-nav ul { display: flex; align-items: center; gap: 1.2rem; font-size: 0.88rem; font-weight: 650; }
+.digest-nav a { display: inline-block; padding-block: 0.15rem; text-decoration: none; }
+.digest-nav a:hover { color: var(--accent-ink); }
 .digest-theme { white-space: nowrap; }
 .digest-profiles { font-size: 0.88rem; }
 
@@ -182,8 +183,13 @@
 .digest-topic-list a { padding: 0.25rem 0.62rem; font-size: 0.7rem; }
 .digest-card-link { margin-block-start: auto; padding-block-start: 1.75rem; color: var(--accent-ink); font-weight: 500; text-decoration: none; }
 
-.digest-back { display: inline-flex; padding-block: 0.15rem; margin-block-end: 2.5rem; color: var(--muted); text-decoration: none; }
-.digest-back:hover { color: var(--accent-ink); }
+/* Breadcrumb trail: <nuk-breadcrumbs> supplies the landmark; the list is styled here. */
+.digest-crumbs { margin-block-end: 2.5rem; color: var(--muted); }
+.digest-crumbs ol { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 0.6rem; }
+.digest-crumbs li + li::before { content: '/'; margin-inline-end: 0.6rem; color: var(--line-strong); }
+.digest-crumbs a { display: inline-block; padding-block: 0.15rem; text-decoration: none; }
+.digest-crumbs a:hover { color: var(--accent-ink); }
+.digest-crumbs [aria-current] { color: var(--ink); text-transform: capitalize; }
 .digest-issue-head .kicker { margin-block-end: 1rem; }
 .digest-byline { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-block-start: 1.5rem; color: var(--muted); font-size: 0.9rem; }
 

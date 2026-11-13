@@ -20,7 +20,10 @@ async function corePages(request: APIRequestContext) {
 }
 
 const homeLink = (page: Page) => page.getByRole('banner').getByRole('link', { name: /Brent Stees/ });
-const findingsNav = (page: Page) => page.getByRole('navigation', { name: 'Findings in this issue' });
+// The findings nav is a <nuk-nav>: the landmark is in its shadow root and the links are slotted
+// light DOM, so link queries start from the host element.
+const findingsNav = (page: Page) => page.locator('nuk-nav.digest-toc');
+const crumbs = (page: Page) => page.locator('nuk-breadcrumbs');
 const firstIssueLink = (page: Page) => page.locator('.digest-card h2 a').first();
 
 test.beforeEach(async ({ page }) => {
@@ -42,7 +45,8 @@ test.describe('round trip', () => {
     await expect(page).toHaveURL(new RegExp(`${latest.url}$`));
     await expect(page.getByRole('heading', { level: 1, name: latest.title })).toBeVisible();
 
-    await page.getByRole('link', { name: '← All issues' }).click();
+    await expect(crumbs(page).locator('[aria-current="page"]')).toHaveText(/^Issue \d+$/);
+    await crumbs(page).getByRole('link', { name: 'AI engineering brief' }).click();
     await expect(page).toHaveURL(/\/digest\/$/);
 
     await homeLink(page).click();
@@ -82,11 +86,42 @@ test.describe('round trip', () => {
     }
   });
 
+  test('nuk elements upgrade and expose named landmarks', async ({ page, request }) => {
+    const [latest] = await issues(request);
+    await page.goto(latest.url);
+    for (const name of ['Digest navigation', 'Findings in this issue', 'Breadcrumb']) {
+      await expect(page.getByRole('navigation', { name, exact: true })).toBeVisible();
+    }
+    expect(await page.evaluate(() => ['nuk-nav', 'nuk-breadcrumbs'].every((tag) => customElements.get(tag)))).toBe(true);
+    await expect(crumbs(page).getByRole('link', { name: 'Home' })).toHaveAttribute('href', '/');
+    await crumbs(page).getByRole('link', { name: 'Home' }).click();
+    await expect(page).toHaveURL(/\/$/);
+  });
+
   test('unknown URLs get a real 404 page with a way home', async ({ page }) => {
     const response = await page.goto('/this-page-does-not-exist/');
     expect(response?.status()).toBe(404);
     await expect(page.getByRole('heading', { level: 1 })).toContainText("isn't here");
     await expect(page.getByRole('main').getByRole('link', { name: /homepage/ })).toHaveAttribute('href', '/');
+  });
+});
+
+test.describe('without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('the round trip and the findings links still work', async ({ page, request }) => {
+    const [latest] = await issues(request);
+    await page.goto('/');
+    await page.getByRole('link', { name: /Read the brief/ }).click();
+    await firstIssueLink(page).click();
+    await expect(page).toHaveURL(new RegExp(`${latest.url}$`));
+    await expect(findingsNav(page).getByRole('link')).toHaveCount(latest.findingIds.length);
+    await findingsNav(page).getByRole('link').nth(1).click();
+    await expect(page).toHaveURL(/#2-/);
+    await crumbs(page).getByRole('link', { name: 'AI engineering brief' }).click();
+    await expect(page).toHaveURL(/\/digest\/$/);
+    await crumbs(page).getByRole('link', { name: 'Home' }).click();
+    await expect(page.getByRole('heading', { level: 1, name: 'Brent Stees' })).toBeVisible();
   });
 });
 

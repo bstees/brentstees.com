@@ -2,6 +2,8 @@
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
     "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@nuk-ui/elements": "file:vendor/nuk-ui-elements-0.1.0.tgz",
+    "@nuk-ui/tokens": "file:vendor/nuk-ui-tokens-0.1.0.tgz",
     "astro": "^7.4.8"
   },
   "type": "module",
@@ -14,7 +16,8 @@
     "deploy": "astro build && wrangler deploy",
     "test:browser": "npm run build && playwright test",
     "test:live": "BASE_URL=https://brentstees.com playwright test",
-    "brief:new": "node scripts/brief/new-issue.mjs"
+    "brief:new": "node scripts/brief/new-issue.mjs",
+    "nuk:sync": "node scripts/nuk-sync.mjs"
   },
   "name": "brentstees-com",
   "private": true,
