@@ -4,13 +4,16 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
   group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Never interrupt an in-flight production upload. Newer runs supersede old
+  # commits through the deploy job's main-head check.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   verify:
@@ -23,6 +26,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      - run: node --test tests/deployment-smoke.test.mjs
       # Validates every issue (fail closed), builds, then checks the built digest output.
       - run: npm run verify:digests
       - run: npx playwright install --with-deps chromium firefox webkit
@@ -33,3 +37,76 @@ jobs:
           name: playwright-results
           path: test-results
           retention-days: 7
+
+      - name: Record tested commit
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          node -e 'require("fs").writeFileSync("dist/deployment.json", JSON.stringify({commit: process.env.COMMIT_SHA}) + "\n")'
+      - name: Save verified site
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: verified-site-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 1
+
+  deploy:
+    needs: verify
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    concurrency:
+      group: cloudflare-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v4
+        with:
+          name: verified-site-${{ github.sha }}
+          path: dist/
+      - name: Skip superseded commits
+        id: current
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          latest=$(git ls-remote origin refs/heads/main | cut -f1)
+          if [ "$latest" = "$EXPECTED_SHA" ]; then
+            echo 'deploy=true' >> "$GITHUB_OUTPUT"
+          else
+            echo 'Skipping a superseded main commit.'
+            echo 'deploy=false' >> "$GITHUB_OUTPUT"
+          fi
+      - name: Deploy verified site to Cloudflare
+        if: steps.current.outputs.deploy == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CI: 'true'
+          WRANGLER_SEND_METRICS: 'false'
+        run: |
+          set -euo pipefail
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo '::error::Configure CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in repository Actions secrets. See docs/deployment.md.'
+            exit 1
+          fi
+          # Uses the lockfile-pinned Wrangler and the already tested build.
+          npx --no-install wrangler deploy < /dev/null
+      - name: Verify production commit
+        if: steps.current.outputs.deploy == 'true'
+        env:
+          EXPECTED_SHA: ${{ github.sha }}
+        run: node scripts/verify-deployment.mjs

@@ -56,3 +56,8 @@ and a practical takeaway, be in scope (`scripts/brief/relevance.mjs`), keep quot
 
 - Add public email in `links.email` (`src/data/site.ts`).
 - Facts are limited to Brent's own statements and public repos. Add employers or metrics only once verified.
+
+## Deployment
+
+See [production deployment](docs/deployment.md) for main-branch automation, required
+GitHub Actions secrets, verification and recovery.
