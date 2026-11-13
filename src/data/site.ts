@@ -236,7 +236,7 @@ export const kb: KbEntry[] = [
   {
     id: 'contact',
     keys: ['contact', 'reach', 'email', 'hire', 'hiring', 'available', 'availability', 'work', 'together', 'connect', 'linkedin', 'talk'],
-    answer: 'The best route is LinkedIn. He’s interested in remote roles combining engineering leadership and hands-on development, especially developer experience, enablement, and AI-assisted delivery.',
+    answer: 'The best route is LinkedIn. Brent enjoys conversations about developer experience, engineering enablement, AI-assisted delivery, and helping people and teams do their best work.',
     cite: '#contact', citeLabel: 'Contact',
   },
 ];

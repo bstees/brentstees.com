@@ -73,7 +73,7 @@ const byId = (p: (typeof projects)[number]) => Object.fromEntries(p.nodes.map((n
           <p class="eyebrow mono"><span class="pulse" aria-hidden="true"></span>Hands-on engineering leadership</p>
           <h1>Brent Stees</h1>
           <p class="statement">
-            Better delivery systems. <em>Human judgment.</em> <em>AI-accelerated engineering.</em>
+            Hands-on engineering. <em>People-centered leadership.</em>
           </p>
 
           <fieldset class="lens" aria-describedby="lens-hint">
@@ -152,15 +152,10 @@ const byId = (p: (typeof projects)[number]) => Object.fromEntries(p.nodes.map((n
         <section id="about" aria-labelledby="about-title">
           <h2 class="kicker mono" id="about-title">{num('about')} · About</h2>
           <div class="prose">
-            <p class="lede" data-lens="lead">
-              I build the systems that help engineers deliver reliable software. My work spans engineering enablement,
-              developer tooling, product development, and AI-assisted workflows. I stay close to the code while
-              helping teams improve how they build, test, and release.
-            </p>
-            <p class="lede" data-lens="build">
-              I combine engineering leadership experience with hands-on product and automation work. I build tools,
-              interfaces, and workflows that connect AI-assisted implementation with human judgment and verifiable
-              evidence. I still write the CSS myself.
+            <p class="lede">
+              I love building software and helping the people around me grow. I’ve led engineering teams, coached
+              technical leaders and built enablement practices around testing, observability and delivery. I stay
+              close to the work, bringing hands-on problem solving and a focus on helping teams do their best work.
             </p>
             <p data-lens="lead">
               Lately the work is about operating models for human-and-agent teams: where AI accelerates delivery, where
@@ -174,7 +169,7 @@ const byId = (p: (typeof projects)[number]) => Object.fromEntries(p.nodes.map((n
             <p class="cta-row">
               <a class="button" href="#work">Explore the evidence <span aria-hidden="true">↓</span></a>
               <a class="text-link" href="#experience">Leadership outcomes</a>
-              <a class="text-link" href="#contact">Discuss a role</a>
+              <a class="text-link" href="#contact">Connect</a>
             </p>
             <ol class="principles">
               {principles.map(([t, d], i) => (
@@ -321,14 +316,13 @@ const byId = (p: (typeof projects)[number]) => Object.fromEntries(p.nodes.map((n
         <!-- 05 Contact ------------------------------------------------------>
         <section id="contact" aria-labelledby="contact-title">
           <h2 class="kicker mono" id="contact-title">{num('contact')} · Contact</h2>
-          <p class="cta-line">Looking for a leader who stays close to the code?</p>
+          <p class="cta-line">Let’s compare notes.</p>
           <p class="muted">
-            I'm interested in remote roles where engineering leadership and hands-on development reinforce each other,
-            especially developer experience, engineering enablement, and AI-assisted delivery.
-            I bring experience building delivery systems and supporting engineering teams, alongside hands-on product development.
+            I enjoy conversations about developer experience, engineering enablement, and AI-assisted delivery,
+            and how we help people and teams do their best work.
           </p>
           <p class="cta-row">
-            <a class="button" href={links.linkedin}>Discuss a role on LinkedIn <span aria-hidden="true">↗</span></a>
+            <a class="button" href={links.linkedin}>Connect on LinkedIn <span aria-hidden="true">↗</span></a>
             {links.email && <a class="text-link" href={`mailto:${links.email}`}>{links.email}</a>}
           </p>
         </section>
