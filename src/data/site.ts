@@ -109,6 +109,26 @@ export const projects: Project[] = [
   },
 ];
 
+// Historical outcomes from Brent's owner-provided July 2026 resume.
+// These are not assertions about his current title, direct reports, or all-platform coverage.
+export const careerHighlights = [
+  {
+    metric: '4 teams · 24 engineers',
+    title: 'Engineering leadership',
+    detail: 'Led four engineering teams totaling 24 engineers supporting the Sitch Video Platform.',
+  },
+  {
+    metric: 'One month to days',
+    title: 'Release testing',
+    detail: 'Reduced release testing time through automation and delivery-workflow improvements.',
+  },
+  {
+    metric: 'Approximately 75%',
+    title: 'Automated unit test coverage',
+    detail: 'Increased automated unit test coverage from near zero to approximately 75%.',
+  },
+];
+
 export const capabilities = [
   {
     title: 'Agentic workflows',
@@ -216,7 +236,7 @@ export const kb: KbEntry[] = [
   {
     id: 'contact',
     keys: ['contact', 'reach', 'email', 'hire', 'hiring', 'available', 'availability', 'work', 'together', 'connect', 'linkedin', 'talk'],
-    answer: 'The best route is LinkedIn. He’s interested in remote roles combining engineering leadership and hands-on development, especially developer experience, enablement, and AI-assisted delivery.',
+    answer: 'The best route is LinkedIn. Brent enjoys conversations about developer experience, engineering enablement, AI-assisted delivery, and helping people and teams do their best work.',
     cite: '#contact', citeLabel: 'Contact',
   },
 ];
