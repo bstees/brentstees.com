@@ -19,6 +19,8 @@ Check that:
 - publication dates, canonical links, coverage dates, and quotations are valid;
 - duplicated stories, unsupported superlatives, excessive quotation, or source-like prose are
   flagged;
-- nothing addresses the site's author directly or leaks private context.
+- original prose uses neither first-person nor second-person framing, and nothing mentions Brent,
+  AI Native, private work or projects, AI agents as authors, or the prompt, task, conversation, or
+  process that produced the issue.
 
 Automation never clears a `[REVIEW: …]` flag. Merging the pull request is the human approval.

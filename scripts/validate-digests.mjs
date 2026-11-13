@@ -16,6 +16,8 @@ const MAX_QUOTE_WORDS = 20;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const SOURCE_MARKUP = /|<\/?(?:box|text|Link|Cite|Entity)\b|\{#(?:each|if)|\{\/(?:each|if)\}/;
 const REVIEW_FLAG = /\[REVIEW\b|\bTODO\b|\bTBD\b|\bFIXME\b/;
+const PERSONAL_VOICE = /(?:\bI\b(?!\/O)|\b(?:Me|me|My|my|Mine|mine|Myself|myself|We|we|Our|our|Ours|ours|Ourselves|ourselves|You|you|Your|your|Yours|yours|Yourself|yourself|Yourselves|yourselves)\b|\bus\b(?![-_])|\b[Ll]et['’]s\b)/;
+const PRIVATE_CONTEXT = /\b(?:Brent|Video Wall)\b|\bAI Native\b|\bLevel-3\b|\bReact\/Vite\b|\bsite (?:owner|author)\b/i;
 
 const errors = [];
 const filenames = (await readdir(contentDirectory)).filter((filename) => filename.endsWith('.md')).sort();
@@ -118,6 +120,24 @@ for (const filename of filenames) {
   if (SOURCE_MARKUP.test(body)) fail('contains ChatGPT-only presentation markup');
   if (REVIEW_FLAG.test(body)) fail('still carries a review flag ([REVIEW …], TODO, TBD or FIXME); a person must resolve it');
 
+  // Public issues must read as standalone research, not as a conversation with the site's author.
+  // Exact source-title links are exempt only from the pronoun check. Trailing source-line prose,
+  // public metadata, callouts, other link labels and all private-context references remain visible.
+  const publicText = `${typeof title === 'string' ? title : ''}\n${typeof description === 'string' ? description : ''}\n${body}`;
+  const voiceProse = publicText
+    .replace(/^\*\*Sources?:\*\*.*$/gm, (line) => line.replace(/\[[^\]]+\]\([^)]+\)/g, ''))
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/`[^`]+`/g, '');
+  const contextProse = publicText.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  const personalVoice = voiceProse.match(PERSONAL_VOICE);
+  if (personalVoice) fail(`uses personal editorial framing ("${personalVoice[0]}")`);
+  const privateContext = contextProse.match(PRIVATE_CONTEXT);
+  if (privateContext) fail(`refers to private author context ("${privateContext[0]}")`);
+
+  for (const quote of body.matchAll(/^>\s?(.+)$/gm)) {
+    if (words(quote[1]) > MAX_QUOTE_WORDS) fail(`quote exceeds the ${MAX_QUOTE_WORDS}-word limit`);
+  }
+
   // Every finding is a numbered heading with its consequence and its takeaway.
   const strict = date >= STRICT_FROM;
   const sections = readFindings(body);
@@ -131,15 +151,12 @@ for (const filename of filenames) {
     if (section.title.trim() === '') failItem('has no title');
     if (!/^\*\*Why it matters:?\*\*/im.test(section.text)) failItem('missing "Why it matters"');
     if (!/^\*\*Practical takeaway:?\*\*/im.test(section.text)) failItem('missing "Practical takeaway"');
-    for (const quote of section.text.matchAll(/^>\s?(.+)$/gm)) {
-      if (words(quote[1]) > MAX_QUOTE_WORDS) failItem(`quote exceeds the ${MAX_QUOTE_WORDS}-word limit`);
-    }
     if (!strict) return;
 
     if (section.level !== 2) failItem('heading must be "## N. Title"');
     if (!/^\*\*What changed:?\*\*/m.test(section.text)) failItem('missing "What changed"');
-    if (!/^\*\*Source:?\*\*:? \[[^\]]+\]\(https:\/\/[^)\s]+\)/m.test(section.text)) {
-      failItem('missing a "**Source:** [title](https://…)" line');
+    if (!/^\*\*Source:?\*\*:? \[[^\]]+\]\(https:\/\/[^)\s]+\)$/m.test(section.text)) {
+      failItem('missing or malformed "**Source:** [title](https://…)" line');
     }
     const itemDate = readDateline(section.text, date);
     const coverageStart = new Date(utc(date).valueOf() - 6 * DAY).toISOString().slice(0, 10);

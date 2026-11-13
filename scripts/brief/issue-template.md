@@ -28,6 +28,6 @@ findingIds: ["F-<YYYY-MM-DD>-01", "F-<YYYY-MM-DD>-02", "F-<YYYY-MM-DD>-03"]
 
 <Same five parts. Three to five findings in all, numbered in order, one findingId each.>
 
-## What I'd prioritize this week
+## Priorities for the week ahead
 
-<Optional closing section.>
+<Optional neutral closing section focused on broadly applicable engineering priorities.>

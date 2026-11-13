@@ -24,8 +24,12 @@ performance claims. Do not infer adoption, safety, legal compliance, independent
 production readiness. Link the primary source for every item. Use no quotation unless the exact
 wording is necessary; keep each quote to 20 words or fewer. Do not imitate source prose or structure.
 
-Write for a public reader. Do not address the site's author as "you" or refer to their private
-projects or earlier conversations.
+Use a neutral, independent editorial voice for a standalone public publication. In original prose,
+do not use first-person or second-person framing. Source titles are exempt; paraphrase quotations
+that would introduce first-person or second-person framing. Never mention or address Brent, AI
+Native, the site owner's work or projects, AI agents as the brief's authors, or the prompt, task,
+prior conversation, or process used to produce the brief. Frame consequences and takeaways for
+engineering teams or organizations generally.
 
 ## Output
 
@@ -33,3 +37,5 @@ One Markdown file at `src/content/digests/YYYY-MM-DD.md` (the issue's Friday), i
 of `scripts/brief/issue-template.md`. Then run `npm run validate:digests`; it fails closed, so fix
 the issue until it passes. Mark anything you could not verify with `[REVIEW: reason]`; the
 validator refuses to publish an issue that still carries a flag, so a person has to resolve it.
+Before returning the issue, scan all original prose for first-person or second-person pronouns and
+private-context references, and rewrite every such occurrence into neutral public-facing language.

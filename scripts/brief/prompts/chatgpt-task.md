@@ -14,9 +14,11 @@ Start from primary sources: arXiv cs.SE, cs.AI and cs.DB; the GitHub Copilot cha
 ## Editorial rules
 
 - Attribute vendor results as vendor-reported. Name preprints, small or author-built benchmarks, preview availability and evaluation limits. Don't turn benchmark results into general claims, and don't infer adoption, safety, compliance or production readiness.
-- Write in your own words. Quote only when the exact wording matters, and keep each quote to 20 words or fewer.
-- Write for a public reader. Don't address me as "you", and don't mention my projects or earlier conversations.
-- If you can't verify something, write [REVIEW: reason] next to it. I resolve those by hand; the site refuses to publish an issue that still has one.
+- Write in original words. Quote only when the exact wording matters, and keep each quote to 20 words or fewer.
+- Use a neutral, independent editorial voice. In original prose, do not use first-person or second-person framing. Source titles are exempt; paraphrase quotations that would introduce first-person or second-person framing.
+- Never mention or address Brent, AI Native, the site owner's work or projects, AI agents as the brief's authors, or the prompt, task, prior conversation, or process used to produce the brief.
+- Frame consequences and takeaways for engineering teams or organizations generally, never for a specific individual.
+- If something cannot be verified, write [REVIEW: reason] next to it. The site refuses to publish an issue that still has one.
 
 ## Output
 
@@ -47,9 +49,9 @@ A short intro naming the strongest items.
 
 (Same five parts. Number the findings 1, 2, 3 in order.)
 
-## What I'd prioritize this week
+## Priorities for the week ahead
 
-Optional closing section, two or three sentences.
+Optional neutral closing section, two or three sentences, focused on broadly applicable engineering priorities.
 ```
 
 Hard requirements, all checked automatically:
@@ -58,3 +60,4 @@ Hard requirements, all checked automatically:
 - The dateline date falls within the seven days ending on this Friday.
 - topics are 1 to 5 lowercase kebab-case words.
 - Don't add title, date, issue number or ID fields. The site fills those in.
+- Before returning the issue, scan all original prose for first-person or second-person pronouns and for any framing that ties the brief to Brent, AI Native, personal work or projects, AI agents as authors, or the prompt, task, or conversation that produced the issue. Rewrite every such reference into neutral public-facing language.
