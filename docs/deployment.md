@@ -17,12 +17,26 @@ In this repository's **Settings → Secrets and variables → Actions**, configu
 
 Create the token using Cloudflare's **Edit Cloudflare Workers** template, scoped
 to the specific account and `brentstees.com` zone, not all accounts/zones. Review
-its permissions before accepting them. Never use a Global API Key or commit a
-token. Store values directly in GitHub's secret editor, not chat, source files,
+its permissions before accepting them. For this static Worker, remove the
+template's unrelated Workers KV Storage, Workers R2 Storage and Workers Tail
+permissions. Retain Workers Scripts Write and Account Settings Read for the
+selected account, and Workers Routes Write for only the site's zone because
+Wrangler manages the two configured custom domains. Where Cloudflare offers
+per-Worker scopes, prefer Editor access limited to the existing
+`brentstees-com` Worker, not product-wide Admin. Do not add DNS Write or broader
+account administration. This is the intended least-privilege configuration;
+the first authorized deployment must verify compatibility with the account's
+available token model. Diagnose any denied operation before expanding grants.
+
+Never use a Global API Key or commit a token. Store values directly in GitHub's secret editor, not chat, source files,
 workflow inputs or logs. Rotate/revoke through Cloudflare and update GitHub when
 necessary. The workflow only injects these secrets into the deployment step.
 
-Reference: https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/
+References:
+- https://developers.cloudflare.com/workers/ci-cd/external-cicd/github-actions/
+- https://developers.cloudflare.com/workers/authorization/workers/
+- https://developers.cloudflare.com/fundamentals/api/reference/template/
+- https://docs.github.com/en/actions/how-tos/write-workflows/choose-what-workflows-do/use-secrets
 
 The connector used to author this workflow cannot list or set Actions secrets.
 Their presence and Cloudflare authorization must be verified by an actual
