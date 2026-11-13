@@ -31,3 +31,7 @@ findingIds: ["F-<YYYY-MM-DD>-01", "F-<YYYY-MM-DD>-02", "F-<YYYY-MM-DD>-03"]
 ## Priorities for the week ahead
 
 <Optional neutral closing section focused on broadly applicable engineering priorities.>
+
+## Commentary from Brent Stees
+
+[REVIEW: Replace with Brent's explicitly approved commentary, or remove this entire optional section.]

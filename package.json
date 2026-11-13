@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "validate:digests": "node scripts/validate-digests.mjs",
+    "validate:digests": "node --test tests/brief-commentary.test.mjs && node scripts/validate-digests.mjs",
     "build": "npm run validate:digests && astro build",
     "verify:digests": "npm run build && node scripts/verify-digest-build.mjs",
     "preview": "astro preview",

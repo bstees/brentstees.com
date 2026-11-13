@@ -31,6 +31,11 @@ Native, the site owner's work or projects, AI agents as the brief's authors, or 
 prior conversation, or process used to produce the brief. Frame consequences and takeaways for
 engineering teams or organizations generally.
 
+An issue may end with `## Commentary from Brent Stees`, but only when Brent supplied that text and
+explicitly approved it for publication. Never invent commentary or derive it from private context.
+Keep the section last and reproduce the approved text verbatim unless Brent specifically requests
+editing. Omit the heading and section when no commentary was supplied.
+
 ## Output
 
 One Markdown file at `src/content/digests/YYYY-MM-DD.md` (the issue's Friday), in exactly the shape
@@ -39,3 +44,5 @@ the issue until it passes. Mark anything you could not verify with `[REVIEW: rea
 validator refuses to publish an issue that still carries a flag, so a person has to resolve it.
 Before returning the issue, scan all original prose for first-person or second-person pronouns and
 private-context references, and rewrite every such occurrence into neutral public-facing language.
+The optional attributed commentary is exempt only from that neutral-voice pass; every other
+validation rule still applies to it.

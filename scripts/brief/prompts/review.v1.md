@@ -21,6 +21,10 @@ Check that:
   flagged;
 - original prose uses neither first-person nor second-person framing, and nothing mentions Brent,
   AI Native, private work or projects, AI agents as authors, or the prompt, task, conversation, or
-  process that produced the issue.
+  process that produced the issue, except inside an optional final `## Commentary from Brent Stees`
+  section containing text Brent explicitly supplied and approved;
+- optional commentary is clearly attributed, non-empty, the final H2 section, and does not contain
+  numbered finding headings. Do not silently write or rewrite commentary.
 
-Automation never clears a `[REVIEW: …]` flag. Merging the pull request is the human approval.
+Automation never clears a `[REVIEW: …]` flag. Publication and AI Native implementation each require
+explicit, issue-specific approval.

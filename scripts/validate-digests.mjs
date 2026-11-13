@@ -2,6 +2,7 @@
 // Runs before each build: one problem anywhere stops the site from publishing.
 // The per-item rules come from nuk's retired packages/editorial validator.
 import { readdir, readFile } from 'node:fs/promises';
+import { splitCommentary } from './brief/commentary.mjs';
 import { classifyFocusAreas, isWithinCoverage } from './brief/relevance.mjs';
 
 const contentDirectory = new URL('../src/content/digests/', import.meta.url);
@@ -69,6 +70,11 @@ for (const filename of filenames) {
     continue;
   }
   const [, frontmatter, body] = frontmatterMatch;
+  // Only the exact, attributed final commentary section may use a personal voice. It remains in
+  // `body`, so review flags, unsafe markup, HTTP links and quote limits still apply to it.
+  const commentary = splitCommentary(body);
+  commentary.errors.forEach(fail);
+  const { researchBody } = commentary;
   const readScalar = (key) => frontmatter.match(new RegExp(`^${key}:\\s*(.+)$`, 'm'))?.[1]?.trim();
   const readJson = (key) => {
     try {
@@ -114,7 +120,7 @@ for (const filename of filenames) {
   if (findings.length < MIN_FINDINGS) fail(`an issue needs at least ${MIN_FINDINGS} findings`);
   if (findings.length > MAX_FINDINGS) fail(`an issue cannot have more than ${MAX_FINDINGS} findings`);
 
-  const sourceLinks = [...body.matchAll(/\]\((https:\/\/[^)]+)\)/g)].map((match) => match[1]);
+  const sourceLinks = [...researchBody.matchAll(/\]\((https:\/\/[^)]+)\)/g)].map((match) => match[1]);
   if (new Set(sourceLinks).size < findings.length) fail('fewer primary-source links than findings');
   if (/\]\(http:\/\//.test(body)) fail('contains a non-HTTPS link');
   if (SOURCE_MARKUP.test(body)) fail('contains ChatGPT-only presentation markup');
@@ -123,7 +129,7 @@ for (const filename of filenames) {
   // Public issues must read as standalone research, not as a conversation with the site's author.
   // Exact source-title links are exempt only from the pronoun check. Trailing source-line prose,
   // public metadata, callouts, other link labels and all private-context references remain visible.
-  const publicText = `${typeof title === 'string' ? title : ''}\n${typeof description === 'string' ? description : ''}\n${body}`;
+  const publicText = `${typeof title === 'string' ? title : ''}\n${typeof description === 'string' ? description : ''}\n${researchBody}`;
   const voiceProse = publicText
     .replace(/^\*\*Sources?:\*\*.*$/gm, (line) => line.replace(/\[[^\]]+\]\([^)]+\)/g, ''))
     .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
@@ -140,7 +146,7 @@ for (const filename of filenames) {
 
   // Every finding is a numbered heading with its consequence and its takeaway.
   const strict = date >= STRICT_FROM;
-  const sections = readFindings(body);
+  const sections = readFindings(researchBody);
   if (sections.length !== findings.length) {
     fail(`${findings.length} findingIds but ${sections.length} numbered finding headings`);
   }

@@ -23,12 +23,20 @@ Issues live in `src/content/digests/YYYY-MM-DD.md` (schema: `src/content.config.
 
 Weekly flow:
 
-1. The Friday brief task writes a draft in the shape of `scripts/brief/issue-template.md`, using
-   `scripts/brief/prompts/brief.v1.md` and the sources in `scripts/brief/sources.v2.json`.
-2. `npm run brief:new -- draft.md` (or `pbpaste | npm run brief:new -- -`) fills in the issue number, date and
-   finding ids, validates, and pushes a `brief/YYYY-MM-DD` branch with a link to open the pull request.
-3. CI validates, builds and runs the browser tests on the pull request. Merging it is the approval.
-4. `npm run deploy`.
+1. The Friday task researches and returns a neutral public draft plus a separate, private set of
+   evidence-linked AI Native improvement proposals. It does not change either repository.
+2. Brent replies with a publication decision, optional commentary, and the AI Native proposal
+   numbers approved for implementation. Site publication and AI Native development are separate
+   approvals; silence or an ambiguous reply authorizes neither.
+3. Approved commentary is appended only as a final `## Commentary from Brent Stees` section. The
+   approved issue is then validated, built, tested, committed, pushed, deployed, and checked live.
+4. Only explicitly approved AI Native proposals are implemented, in an isolated branch or worktree
+   that preserves existing local changes. Tests run before a reviewable branch or pull request is
+   handed back; merging remains a separate decision.
+
+For a manual intake, `npm run brief:new -- draft.md` (or `pbpaste | npm run brief:new -- -`) fills in
+the issue number, date and finding ids, validates, and pushes a `brief/YYYY-MM-DD` branch with a link
+to open a pull request.
 
 `npm run validate:digests` runs before every build and fails closed. New issues must have three to five numbered
 findings, each with a dateline inside the seven-day window, an HTTPS primary source, what changed, why it matters
