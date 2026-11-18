@@ -1,0 +1,67 @@
+---
+import DigestLayout from '../../layouts/DigestLayout.astro';
+const title = 'nūk: native behavior, reusable interfaces';
+const description = 'A static case study of nūk: framework-neutral Web Components, React adapters, separate design tokens, and reviewable interaction evidence.';
+---
+<DigestLayout title={title} description={description} canonicalPath="/work/nuk/" section="work">
+  <header class="digest-issue-head">
+    <p class="kicker mono">Selected work · nūk</p>
+    <h1>{title}</h1>
+    <p class="digest-deck">A component system that keeps browser behavior, application integration,
+      and visual design separate. This page explains the decisions; Storybook makes them inspectable.</p>
+    <p class="cta-row">
+      <a class="button" href="https://nuk.brentstees.com/">Explore the component demos</a>
+      <a class="text-link" href="https://github.com/bstees/nuk">Inspect the source</a>
+    </p>
+  </header>
+  <article class="digest-prose">
+    <h2>The problem</h2>
+    <p>Repeated interface patterns need consistent behavior without tying every consumer to one
+      framework or one theme. nūk starts from native HTML and browser semantics, then adds a shared
+      component vocabulary and explicit integration contracts.</p>
+    <h2>Decisions and tradeoffs</h2>
+    <ul>
+      <li><strong>Native behavior first.</strong> Standards-based custom elements supply reusable
+        behaviors. ARIA supplements behavior that HTML does not already provide. Native primitives
+        are a starting point for accessibility, not a substitute for testing.</li>
+      <li><strong>One behavior, multiple integration surfaces.</strong> Framework-neutral elements
+        and typed React adapters are separate packages. That makes the core reusable while keeping
+        React integration explicit.</li>
+      <li><strong>Structure is not theme.</strong> Structural CSS, versioned design tokens, and
+        optional light, dark, and high-contrast themes are separated. Consumers can adapt presentation
+        without replacing component behavior.</li>
+      <li><strong>Generation stops at review.</strong> The Forge proof of concept supports clean-room
+        specification and component translation. Generated candidates require human approval;
+        rejection rules are not a claim that generated code is safe.</li>
+    </ul>
+    <h2>A real consumer, not only a catalog</h2>
+    <p>This site is nūk’s first consumer. Its AI engineering brief uses nūk navigation and breadcrumb
+      elements, tokens, and styles. Integration gaps feed back into the library backlog. This is a
+      concrete use case, not evidence of broad adoption or measured productivity gains.</p>
+    <h2>Follow the evidence</h2>
+    <ul>
+      <li><a href="https://github.com/bstees/nuk#readme">Repository overview and package boundaries</a>:
+        elements, React adapters, themes, tokens, Forge, and Storybook.</li>
+      <li><a href="https://github.com/bstees/nuk/blob/main/docs/components.md">Component contracts</a>:
+        API, keyboard behavior, styling parts, and screen-reader notes.</li>
+      <li><a href="https://nuk.brentstees.com/?path=/story/components-forms--field-patterns">Form interaction example</a>:
+        inspect labels, validation, keyboard use, and narrow-screen layout.</li>
+      <li><a href="https://nuk.brentstees.com/?path=/docs/components-dialog-and-menu--docs">Dialog and menu examples</a>:
+        inspect opening, dismissal, keyboard navigation, and focus behavior.</li>
+      <li><a href="https://github.com/bstees/brentstees.com/blob/main/src/layouts/DigestLayout.astro">This site’s integration</a>
+        and <a href="/digest/">the live brief</a>: inspect the consumer alongside the library.</li>
+      <li><a href="https://github.com/bstees/nuk/actions/workflows/browser-a11y.yml">Browser and accessibility CI runs</a>:
+        inspect the tested commit, checks, and result. A workflow definition or past pass is not proof
+        that every component or current deployment has passed.</li>
+      <li><a href="https://github.com/bstees/nuk/blob/main/docs/implementation-plan.md">Implementation plan</a>
+        and <a href="https://github.com/bstees/nuk/blob/main/docs/backlog.md">backlog</a>: distinguish
+        implemented behavior from future work.</li>
+    </ul>
+    <h2>Scope and verification</h2>
+    <p>nūk is a component library in development. Its repository documents local checks and Storybook
+      interaction and accessibility tooling. Individual examples and automated checks do not establish
+      whole-library accessibility compliance. Product teams still need to validate their own
+      combinations, assistive-technology behavior, and target browsers.</p>
+    <p><a href="/#work">Back to selected work</a></p>
+  </article>
+</DigestLayout>

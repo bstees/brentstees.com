@@ -35,3 +35,21 @@ for (const issue of index.issues) {
 
 console.log('Verified digest archive, article metadata, JSON index, RSS, and sitemap output.');
 
+
+// Public discovery must cover both the portfolio and every digest URL.
+const rootDist = new URL('../dist/', import.meta.url);
+const rootSitemap = await readFile(new URL('sitemap.xml', rootDist), 'utf8');
+const robots = await readFile(new URL('robots.txt', rootDist), 'utf8');
+const caseStudy = await readFile(new URL('work/nuk/index.html', rootDist), 'utf8');
+for (const loc of ['https://brentstees.com/', 'https://brentstees.com/work/nuk/',
+  ...(sitemap.match(/<loc>[^<]+<\/loc>/g) ?? []).map((tag) => tag.slice(5, -6))]) {
+  if (!rootSitemap.includes(`<loc>${loc}</loc>`)) fail(`root sitemap omits ${loc}`);
+}
+if (!robots.includes('Sitemap: https://brentstees.com/sitemap.xml')) fail('robots does not advertise root sitemap');
+if (!caseStudy.includes('href="https://brentstees.com/work/nuk/"')) fail('case study canonical is missing');
+for (const heading of ['The problem', 'Decisions and tradeoffs', 'Follow the evidence', 'Scope and verification']) {
+  if (!caseStudy.includes(heading)) fail(`static case study omits ${heading}`);
+}
+
+if (!caseStudy.includes('href="https://github.com/bstees/nuk/actions/workflows/browser-a11y.yml"')) fail('case study omits CI evidence');
+console.log('Verified root sitemap, robots discovery, and static nūk case study.');
