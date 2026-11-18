@@ -50,4 +50,6 @@ if (!caseStudy.includes('href="https://brentstees.com/work/nuk/"')) fail('case s
 for (const heading of ['The problem', 'Decisions and tradeoffs', 'Follow the evidence', 'Scope and verification']) {
   if (!caseStudy.includes(heading)) fail(`static case study omits ${heading}`);
 }
+
+if (!caseStudy.includes('href="https://github.com/bstees/nuk/actions/workflows/browser-a11y.yml"')) fail('case study omits CI evidence');
 console.log('Verified root sitemap, robots discovery, and static nūk case study.');

@@ -68,6 +68,7 @@ test('case study and recognition are linked and readable without JavaScript', as
   await expect(page.getByRole('heading', { level: 1 })).toContainText('nūk');
   await expect(page.getByRole('heading', { name: 'Decisions and tradeoffs' })).toBeVisible();
   await expect(page.locator('main')).toContainText('first consumer');
+  await expect(page.getByRole('link', { name: 'Browser and accessibility CI runs', exact: true })).toHaveAttribute('href', 'https://github.com/bstees/nuk/actions/workflows/browser-a11y.yml');
   await expect(page.locator('main')).toContainText('do not establish');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.getByRole('link', { name: 'Back to selected work', exact: true }).click();
