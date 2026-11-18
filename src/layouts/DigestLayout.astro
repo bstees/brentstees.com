@@ -17,6 +17,7 @@ type Props = {
   topics?: string[];
   pageType?: 'website' | 'article';
   noindex?: boolean;
+  section?: 'digest' | 'work';
 };
 
 const {
@@ -27,6 +28,7 @@ const {
   topics = [],
   pageType = 'website',
   noindex = false,
+  section = 'digest',
 } = Astro.props;
 const site = Astro.site ?? new URL('https://brentstees.com');
 const canonical = new URL(canonicalPath, site);
@@ -81,11 +83,12 @@ const jsonLd = pageType === 'article' && publicationDate
     <header class="digest-masthead">
       <a class="digest-home" href="/">
         <span class="digest-mark" aria-hidden="true"></span>
-        <span><strong>Brent Stees</strong><small class="mono">AI engineering notes</small></span>
+        <span><strong>Brent Stees</strong><small class="mono">{section === 'work' ? 'Engineering case study' : 'AI engineering notes'}</small></span>
       </a>
-      <nuk-nav class="digest-nav" label="Digest navigation">
+      <nuk-nav class="digest-nav" label={section === 'work' ? 'Site navigation' : 'Digest navigation'}>
         <ul>
-          <li><a href="/digest/">All issues</a></li>
+          {section === 'work' && <li><a href="/#work">Selected work</a></li>}
+          <li><a href="/digest/">{section === 'work' ? 'AI brief' : 'All issues'}</a></li>
           <li><a href="/digest/rss.xml">RSS</a></li>
         </ul>
       </nuk-nav>
@@ -110,8 +113,8 @@ const jsonLd = pageType === 'article' && publicationDate
     </main>
 
     <footer class="digest-footer mono muted">
-      <p>Research notes on AI-assisted software delivery, verification, and engineering systems.</p>
-      <p><a href="/">← brentstees.com</a> · <a href="/digest/index.json">JSON index</a> · <a href="/digest/sitemap.xml">Sitemap</a></p>
+      <p>{section === 'work' ? 'Engineering decisions, implementation, and verification evidence.' : 'Research notes on AI-assisted software delivery, verification, and engineering systems.'}</p>
+      <p><a href="/">← brentstees.com</a> · <a href="/digest/index.json">JSON index</a> · <a href="/sitemap.xml">Sitemap</a></p>
     </footer>
 
     <script>

@@ -61,3 +61,14 @@ and a practical takeaway, be in scope (`scripts/brief/relevance.mjs`), keep quot
 
 See [production deployment](docs/deployment.md) for main-branch automation, required
 GitHub Actions secrets, verification and recovery.
+
+## Portfolio discovery
+
+- `/work/nuk/` is the static, no-JavaScript case study linked from selected work.
+- `/sitemap.xml` combines the homepage and case study with the existing digest sitemap.
+- `/robots.txt` advertises the root sitemap. Cloudflare may prepend managed comments; verify the
+  live response retains the sitemap directive after deployment. This does not change Cloudflare bot settings.
+- `npm run verify:digests` also verifies these discovery outputs. The shared browser suite includes
+  the case study for responsive layout, theme, and accessibility checks.
+- Career history remains on LinkedIn. The 2021 recognition links to Technical.ly's published profile;
+  no new employment dates, current title, or unverified performance metrics are asserted.
