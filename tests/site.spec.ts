@@ -13,10 +13,10 @@ async function issues(request: APIRequestContext): Promise<Issue[]> {
   return (await response.json()).issues;
 }
 
-/** The pages every cross-cutting check runs on: home, digest index, latest issue, a topic. */
+/** The pages every cross-cutting check runs on: home, case study, digest index, latest issue, a topic. */
 async function corePages(request: APIRequestContext) {
   const [latest] = await issues(request);
-  return ['/', '/digest/', latest.url, `/digest/topic/${latest.topics[0]}/`];
+  return ['/', '/work/nuk/', '/digest/', latest.url, `/digest/topic/${latest.topics[0]}/`];
 }
 
 const homeLink = (page: Page) => page.getByRole('banner').getByRole('link', { name: /Brent Stees/ });
@@ -74,12 +74,12 @@ test.describe('round trip', () => {
     await expect(entries.filter({ hasText: 'Brief' })).toHaveAttribute('href', '#brief');
   });
 
-  test('every digest page links home, to the digest index, and to the profiles', async ({ page, request }) => {
+  test('every content page links home, to the digest index, and to the profiles', async ({ page, request }) => {
     for (const path of (await corePages(request)).slice(1)) {
       await page.goto(path);
       await expect(homeLink(page)).toHaveAttribute('href', '/');
       const banner = page.getByRole('banner');
-      await expect(banner.getByRole('link', { name: 'All issues' })).toHaveAttribute('href', '/digest/');
+      await expect(banner.getByRole('link', { name: path === '/work/nuk/' ? 'AI brief' : 'All issues', exact: true })).toHaveAttribute('href', '/digest/');
       for (const name of ['GitHub', 'LinkedIn', 'CodePen']) await expect(banner.getByRole('link', { name })).toBeVisible();
       await expect(banner.getByRole('group', { name: 'Color theme' })).toBeVisible();
       await expect(page.locator('input[name="lens"]')).toHaveCount(0);
